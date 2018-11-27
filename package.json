@@ -1,0 +1,18 @@
+{
+  "name": "Augur-subgraph",
+  "version": "1.0.0",
+  "repository": "https://github.com/graphprotocol/Augur-subgraph",
+  "license": "MIT",
+  "scripts": {
+    "codegen": "graph codegen --output-dir types/ subgraph.yaml",
+    "build": "graph build subgraph.yaml",
+    "build-ipfs": "graph build --ipfs /ip4/127.0.0.1/tcp/5001 subgraph.yaml",
+    "build-wast": "graph build -t wast subgraph.yaml",
+    "deploy": "graph deploy subgraph.yaml --ipfs /ip4/127.0.0.1/tcp/5001 --node http://127.0.0.1:8020 --subgraph-name augur-subgraph"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.4.1",
+    "@graphprotocol/graph-ts": "^0.4.2"
+  },
+  "author": "David Kajpust <kajpustd@gmail.com>"
+}

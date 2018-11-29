@@ -1,3 +1,65 @@
-type Test @entity {
-    id: Bytes! #address
+
+#Augur Events
+#- from this I am going to distingushes Types, and what contract they are associated with. this might kind of look like a schema
+#- Sets (Augur.sol)
+#- Dispute Crowdsourcer (Augur.sol)
+#- Fee Window (Augur.sol)
+#- InitialReporter(Augur.sol)
+#- Market(Augur.sol)
+#- Mint and Burn (VariableSupplyToken.sol)
+#- TokensBurned, TokensMinted, TokensTransferred (Augur.sol)
+#- Order(Augur.sol)
+#- TradingProceedsClaimed(Augur.sol)
+#- Universe (Augur.sol)
+#- note there are only a few contracts here
+#- ERC20Basic.sol (Transfer, Approval)
+#- Augur.sol
+#- VariableSupplyToken.sol
+
+# Unused Events - Approval, Transfer (ERC20)
+# Events I'm not sure how to put in a schema yet - EscapeHatchChanged, ReportingParticipantDisavowed, TimestampSet, TradingProceedsClaimed
+
+# Events - CompleteSetsPurchased, CompleteSetsSold
+type Sets @entity {
+    id: ID!
+}
+
+# Events - DisputeCrowdsourcerCompleted, DisputeCrowdsourcerContribution, DisputeCrowdsourcerCreated, DisputeCrowdSourcerRedeemed
+type DisputeCrowdsourcer @entity {
+    id: ID!
+}
+
+# Events - FeeWindowCreated, FeeWindowRedeemed
+type FeeWindow @entity {
+    id: ID!
+}
+
+# Events - InitialReporterRedeemed, InitialReportSubmitted, InitialreporterTransferred
+type InitialReporter @entity {
+    id: ID!
+}
+
+# Events - MarketCreated, MarketFinalized, MarketMigrated, MarketMailboxTransferred, MarketParticipantsDisavowed, MarketTransferred
+type Market @entity {
+    id: ID!
+}
+
+# Events - mint and burn from VariableSupplyToken. And 0xd5524179cb7ae012f5b642c1d6d700bbaa76b96b is the address
+type Cash @entity {
+    id: ID!
+}
+
+# Events - TokensBurned, TokensMinted, TokensTransferred
+type Tokens @entity {
+    id: ID!
+}
+
+# Events - OrderCanceled, OrderCreated, OrderFilled,
+type Order @entity {
+    id: ID!
+}
+
+# Events - UniverseCreated, UniverseForked
+type Universe @entity {
+    id: ID!
 }

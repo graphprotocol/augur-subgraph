@@ -2,21 +2,21 @@ specVersion: 0.0.1
 schema:
   file: ./schema.graphql
 dataSources:
-#  - kind: ethereum/contract
-#    name: Augur
-#    source:
-#      address: " 0x8E870D67F660D95d5be530380D0eC0bd388289E1" # Mainnet
-#      abi: Augur
-#    mapping:
-#      kind: ethereum/events
-#      apiVersion: 0.0.1
-#      language: wasm/assemblyscript
-#      entities:
-#        - Test
-#      abis:
-#        - name: Augur
-#          file: ./abis/Augur.json
-#      eventHandlers:
-#        - event: Transfer()
-#          handler: handleTransfer
-#      file: ./mappings/Augur.ts
+  - kind: ethereum/contract
+    name: Augur
+    source:
+      address: " 0x75228dce4d82566d93068a8d5d49435216551599" # Mainnet
+      abi: Augur
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.1
+      language: wasm/assemblyscript
+      entities:
+        - Test
+      abis:
+        - name: Augur
+          file: ./abis/Augur.json
+      eventHandlers:
+        - event: Transfer()
+          handler: handleTransfer
+      file: ./mappings/Augur.ts

@@ -19,28 +19,77 @@
 # Unused Events - Approval, Transfer (ERC20)
 # Events I'm not sure how to put in a schema yet - EscapeHatchChanged, ReportingParticipantDisavowed, TimestampSet, TradingProceedsClaimed
 
+
+# Events - MarketCreated, MarketFinalized, MarketMigrated, MarketMailboxTransferred, MarketParticipantsDisavowed, MarketTransferred
+type Market @entity {
+    # event MarketCreated 
+    id: ID! # address market
+    topic: Bytes!
+    description: String # I think its not required
+    extraInfo: String 
+    universe: Bytes! # an address
+    marketCreator: Bytes!
+    outcomes: [Bytes!]! # Might be a special way to handle this, see dharma
+    marketCreationFee: BigInt
+    minPrice: BigInt
+    maxPrice: BigInt
+}
+
+# Events - InitialReportSubmitted, Initial Reporter Redeemed
+type InitialReport @entity {
+    # event InitialReportSubmitted
+    id: ID! # address market
+    universe: Bytes!
+    reporter: Bytes!
+    amountStaked: BigInt!
+    isDesignatedReported: Bool # false null bug, no !
+    payoutNumerators: [BigInt!]! # see dharma
+    description: String
+
+    #event InitialReporterRedeemed 
+    amountRedeemed: BigInt!
+    repReceived: BigInt!
+    
+}
+
+# Events - DisputeCrowdsourcerCompleted, DisputeCrowdsourcerContribution, DisputeCrowdsourcerCreated, DisputeCrowdSourcerRedeemed
+type DisputeCrowdsourcer @entity {
+    # event DisputeCrowdsourcerCreated
+    id: ID! # address market
+    universe: Bytes!
+    disputeCrowdsourcer: Bytes!
+    payoutNumerators: [BigInt!]! # see dharma
+    size: BigInt
+
+    # event DisputeCrowdsourcerContribution
+    # need to decide to make these arrays or their own entites, as they are multiple contibutors to a dispute
+    reporters: [Bytes!]! # from event Contribution
+    amountStaked: [BigInt!]!
+    description: [String!]!
+
+    # event DisputeCrowdsourcerCompleted
+    completed: Boolean # this gets triggered true when event Completed is done 
+
+    # event DisputeCrowdsourcedRedeemed
+    amountRedeemed: [BigInt!]! #event Redeemed
+    repReceived: [BigInt!]! #event Redeemed
+    # payout numerators again, prob just update it, from event reedemed
+}
+
 # Events - CompleteSetsPurchased, CompleteSetsSold
 type Sets @entity {
     id: ID!
 }
 
-# Events - DisputeCrowdsourcerCompleted, DisputeCrowdsourcerContribution, DisputeCrowdsourcerCreated, DisputeCrowdSourcerRedeemed
-type DisputeCrowdsourcer @entity {
-    id: ID!
-}
+
 
 # Events - FeeWindowCreated, FeeWindowRedeemed
 type FeeWindow @entity {
     id: ID!
 }
 
-# Events - InitialReporterRedeemed, InitialReportSubmitted, InitialreporterTransferred
+# Events - InitialReporterRedeemed, , InitialreporterTransferred
 type InitialReporter @entity {
-    id: ID!
-}
-
-# Events - MarketCreated, MarketFinalized, MarketMigrated, MarketMailboxTransferred, MarketParticipantsDisavowed, MarketTransferred
-type Market @entity {
     id: ID!
 }
 

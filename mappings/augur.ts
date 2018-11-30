@@ -2,23 +2,7 @@
 import 'allocator/arena'
 export { allocate_memory }
 
-// Import APIs from graph-ts
-import { store } from '@graphprotocol/graph-ts'
 
-// Import event types from the registrar contract ABI
-// import {} from '../types/'
+import {handleMarketCreated, handleMarketFinalized, handleReportingParticpiantDisavowed, handleMarketMigrated, handleMarketMailboxTransferred} from "./market";
 
-// Import entity types from the schema
-// import { Collateral } from '../types/schema'
-
-// export function handleLock(event: CollateralLocked): void {
-//   let id = event.params.agreementID.toHex()
-//
-//   let collateral = new Collateral()
-//   collateral.tokenAddress = event.params.token
-//   collateral.amount = event.params.amount
-//   collateral.status = 'locked'
-//   collateral.debtOrder = id
-//
-//   store.set('Collateral', id, collateral)
-// }
+export {handleMarketCreated, handleMarketFinalized, handleReportingParticpiantDisavowed, handleMarketMigrated, handleMarketMailboxTransferred}

@@ -5,7 +5,7 @@ dataSources:
   - kind: ethereum/contract
     name: Augur
     source:
-      address: " 0x75228dce4d82566d93068a8d5d49435216551599" # Mainnet
+      address: "0x75228dce4d82566d93068a8d5d49435216551599" # Mainnet: 0x75228dce4d82566d93068a8d5d49435216551599  Rinkeby (Browser test):  0x990B2D2aF7e87cd015A607c3A95d7622c9bBeDe1
       abi: Augur
     mapping:
       kind: ethereum/events
@@ -42,50 +42,50 @@ dataSources:
           handler: handleMarketParticipantsDisavowed
         - event: MarketTransferred(address,address,address)
           handler: handleMarketTransferred
-        - event: CompleteSetPurchase(address,address,address,uint256)
-          handler: handleCompleteSetPurchase
-        - event: CompleteSetsSold(address,address,address,uint256)
-          handler: handleCompleteSetSold
-        - event: TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256)
-          handler: handleTradingProceedsClaimed (used double)
-          # Initial Report handlers Below
-        - event: InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string)
-          handler: handleInitialReportSubmitted
-        - event: InitialReportRedeemed(address,address,address,uint256,uint256,uint256[])
-          handler: handleInitialReporterRedeemed
-        - event: InitialReporterTransferred(address,address,address,address)
-          handler: handleInitialReporterTransferred
-          # Dispute Crowdsourcer handlers below
-        - event: DisputeCrowdsourcerCompleted(address,address,address)
-          handler: handleDisputeCrowdsourcerCompleted
-        - event: DisputeCrowdsourcerContribution(address,address,address,address,uint256,string)
-          handler: handleDisputeCrowdsourcerContribution
-        - event: DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256)
-          handler: handleDisputeCrowdsourcerCreated
-        - event: DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256[])
-          handler: handleDisputeCrowdsourcerRedeemed
-          # Universe handlers below
-        - event: UniverseCreated(address,address,uint256[])
-          handler: handleUniverseCreated
-        - event: UniverseForked(address)
-          handler: handleUniverseForked
-          # Order handlers below
-        - event: OrderCanceled(address,address,address,bytes32,uint8,uint256,uint256)
-          handler: handleOrderCanceled
-        - event: OrderCreated(uint8,uint256,uint256,address,uint256,uint256,bytes32,bytes32,address,address)
-          handler: handleOrderCreated
-        - event: OrderFilled(address,address,address,bytes32,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bytes32)
-          handler: handleOrderFilled
-          # token handlers below
-        - event: TokensTransferred(address,address,address,address,uint256,int8,address)
-          handler: handleTokensTransferred
-        - event: TokensMinted(address,address,address,uint256,uint8,address)
-          handler: handleTokensBurned
-        - event: TokensBurned(address,address,address,uint256,uint8,address)
-          handler: handleTokensMinted
-          # dispute window handler below
-        - event: DisputeWindowCreated(address,address,uint256,uint256,uint256)
-          handler: handleDisputeWindowCreated
+#        - event: CompleteSetsPurchased(address,address,address,uint256)
+#          handler: handleCompleteSetPurchase
+#        - event: CompleteSetsSold(address,address,address,uint256)
+#          handler: handleCompleteSetSold
+#        - event: TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256)
+#          handler: handleTradingProceedsClaimed (used double)
+#          # Initial Report handlers Below
+#        - event: InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string)
+#          handler: handleInitialReportSubmitted
+#        - event: InitialReportRedeemed(address,address,address,uint256,uint256,uint256[])
+#          handler: handleInitialReporterRedeemed
+#        - event: InitialReporterTransferred(address,address,address,address)
+#          handler: handleInitialReporterTransferred
+#          # Dispute Crowdsourcer handlers below
+#        - event: DisputeCrowdsourcerCompleted(address,address,address)
+#          handler: handleDisputeCrowdsourcerCompleted
+#        - event: DisputeCrowdsourcerContribution(address,address,address,address,uint256,string)
+#          handler: handleDisputeCrowdsourcerContribution
+#        - event: DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256)
+#          handler: handleDisputeCrowdsourcerCreated
+#        - event: DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256[])
+#          handler: handleDisputeCrowdsourcerRedeemed
+#          # Universe handlers below
+#        - event: UniverseCreated(address,address,uint256[])
+#          handler: handleUniverseCreated
+#        - event: UniverseForked(address)
+#          handler: handleUniverseForked
+#          # Order handlers below
+#        - event: OrderCanceled(address,address,address,bytes32,uint8,uint256,uint256)
+#          handler: handleOrderCanceled
+#        - event: OrderCreated(uint8,uint256,uint256,address,uint256,uint256,bytes32,bytes32,address,address)
+#          handler: handleOrderCreated
+#        - event: OrderFilled(address,address,address,bytes32,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bytes32)
+#          handler: handleOrderFilled
+#          # token handlers below
+#        - event: TokensTransferred(address,address,address,address,uint256,int8,address)
+#          handler: handleTokensTransferred
+#        - event: TokensMinted(address,address,address,uint256,uint8,address)
+#          handler: handleTokensBurned
+#        - event: TokensBurned(address,address,address,uint256,uint8,address)
+#          handler: handleTokensMinted
+#          # dispute window handler below
+#        - event: DisputeWindowCreated(address,address,uint256,uint256,uint256)
+#          handler: handleDisputeWindowCreated
       file: ./mappings/Augur.ts
 
 

@@ -15,12 +15,13 @@ type Market @entity {
     marketCreationFee: BigInt
     minPrice: BigInt
     maxPrice: BigInt
+    marketType: String!
 
     # event ReportingParticipantDisavowed
     reportingParticipantDisavowed: [Bytes!]! # QUESTION: , not clear if this is an array of participants or only one participant. I would assume it's one but will need to double check 
 
     # event MarketParticipantDisavowed
-    marketParticipantsDisavowed: [Bytes!]! # the dispute crowdsourcers for a market in a universe have been disavowed
+    marketParticipantsDisavowed: Boolean # the dispute crowdsourcers for a market in a universe have been disavowed
 
     # event MarketFinalized
     finalized: Boolean 
@@ -51,7 +52,7 @@ type InitialReport @entity {
     universe: Bytes!
     reporter: [Bytes!]! # ONLY FIELD EDITED BY INITIALREPORTERTRANSFERRED -  QUESTION: do I want to keep a list of all previous reporters? i will have an array for now 
     amountStaked: BigInt!
-    isDesignatedReported: Bool # false null bug, no !
+    isDesignatedReported: Boolean # false null bug, no !
     payoutNumerators: [BigInt!]! 
     description: String
 
@@ -102,7 +103,7 @@ type Order @entity {
     creator: Bytes!
     moneyEscrowed: BigInt!
     sharesEscrowed: BigInt!
-    tradeGroupID: Bytes!
+    tradeGroupIDCreator: Bytes!
     orderId: Bytes!
     universe: Bytes!
     shareToken: Bytes!
@@ -114,20 +115,20 @@ type Order @entity {
 
     # event OrderFilled
     # QUESTION: - it might be possible to make MULTIPLE order fills, as you can half fill. I need to confirm but for now I am assuming arrays 
-    filler: [Bytes]
-    numCreatorShares: [BigInt]
-    numCreatorTokens: [BigInt]
-    numFillerShares: [BigInt]
-    numFillerTokens: [BigInt]
-    marketCreatorFees: [BigInt]
-    reporterFees: [BigInt]
-    amountFilled: [BigInt]
-    tradeGroupID: [Bytes]
+    filler: [Bytes!]!
+    numCreatorShares: [BigInt!]!
+    numCreatorTokens: [BigInt!]!
+    numFillerShares: [BigInt!]!
+    numFillerTokens: [BigInt!]!
+    marketCreatorFees: [BigInt!]!
+    reporterFees: [BigInt!]!
+    amountFilled: [BigInt!]!
+    tradeGroupIDFilled: [Bytes!]!
 }
 
 # event TradingProceedsClaimed (also used in Market)
 # QUESTION - does this belong back to the market? i.e. should it be an entity relationship, or put directly in there. I assume this is correct right now . so adding it in
-type TradingProceedsClaimed @entity {
+type ClaimedTradingProceeds @entity {
     id: ID! # market
     universe: Bytes!
     shareToken: Bytes!

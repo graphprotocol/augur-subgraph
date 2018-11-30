@@ -1,26 +1,7 @@
-
-#Augur Events
-#- from this I am going to distingushes Types, and what contract they are associated with. this might kind of look like a schema
-#- Sets (Augur.sol)
-#- Dispute Crowdsourcer (Augur.sol)
-#- Fee Window (Augur.sol)
-#- InitialReporter(Augur.sol)
-#- Market(Augur.sol)
-#- Mint and Burn (VariableSupplyToken.sol)
-#- TokensBurned, TokensMinted, TokensTransferred (Augur.sol)
-#- Order(Augur.sol)
-#- TradingProceedsClaimed(Augur.sol)
-#- Universe (Augur.sol)
-#- note there are only a few contracts here
-#- ERC20Basic.sol (Transfer, Approval)
-#- Augur.sol
-#- VariableSupplyToken.sol
-
 # Unused Events - Approval, Transfer (ERC20)
-# Events I'm not sure how to put in a schema yet - EscapeHatchChanged, ReportingParticipantDisavowed, TimestampSet, TradingProceedsClaimed
+# Events not stored - EscapeHatchChanged, TimestampSet, 
 
-
-# Events - MarketCreated, MarketFinalized, MarketMigrated, MarketMailboxTransferred, MarketParticipantsDisavowed, MarketTransferred
+# Events - MarketCreated, ReportingParticipantDisavowed, MarketFinalized, MarketMigrated, MarketMailboxTransferred, MarketParticipantsDisavowed, MarketTransferred, CompleteSetPurchase, CompleteSetSold
 type Market @entity {
     # event MarketCreated 
     id: ID! # address market
@@ -29,27 +10,50 @@ type Market @entity {
     extraInfo: String 
     universe: Bytes! # an address
     marketCreator: Bytes!
-    outcomes: [Bytes!]! # Might be a special way to handle this, see dharma
+    outcomes: [Bytes!]! # QUESTION: Might be a special way to handle this, see dharma
     marketCreationFee: BigInt
     minPrice: BigInt
     maxPrice: BigInt
+
+    # event ReportingParticipantDisavowed
+    reportingParticipantDisavowed: [Bytes!]! # QUESTION: , not clear if this is an array of participants or only one participant. I would assume it's one but will need to double check 
+
+    # event MarketParticipantDisavowed
+    marketParticipantsDisavowed: [Bytes!]! # the dispute crowdsourcers for a market in a universe have been disavowed
+
+    # event MarketFinalized
+    finalized: Boolean 
+
+    # event MarketMigrated
+    migrated: Bytes
+
+    # event CompleteSetPurchase
+    numCompleteSetsPurchase: BigInt
+
+    # event CompleteSetsSold
+    numCompleteSetsSold: BigInt
+
+    # event MarketTransferred
+    marketOwners: [Bytes!]! # QUESTION: how does this work? need to test live with array
+
+    # event MarketMailboxTransferred
+    marketMailboxOwners: [Bytes!]! # QUESTION: how does this work? need to test live with array
 }
 
-# Events - InitialReportSubmitted, Initial Reporter Redeemed
+# Events - InitialReportSubmitted, InitialReporterRedeemed, InitialReporterTransferred
 type InitialReport @entity {
     # event InitialReportSubmitted
     id: ID! # address market
     universe: Bytes!
-    reporter: Bytes!
+    reporter: Bytes! # ONLY FIELD EDITED BY INITIALREPORTERTRANSFERRED -  QUESTION: do I want to keep a list of all previous reporters
     amountStaked: BigInt!
     isDesignatedReported: Bool # false null bug, no !
-    payoutNumerators: [BigInt!]! # see dharma
+    payoutNumerators: [BigInt!]! # QUESTION: see dharma
     description: String
 
     #event InitialReporterRedeemed 
     amountRedeemed: BigInt!
     repReceived: BigInt!
-    
 }
 
 # Events - DisputeCrowdsourcerCompleted, DisputeCrowdsourcerContribution, DisputeCrowdsourcerCreated, DisputeCrowdSourcerRedeemed
@@ -58,11 +62,11 @@ type DisputeCrowdsourcer @entity {
     id: ID! # address market
     universe: Bytes!
     disputeCrowdsourcer: Bytes!
-    payoutNumerators: [BigInt!]! # see dharma
+    payoutNumerators: [BigInt!]! # QUESTION: see dharma
     size: BigInt
 
     # event DisputeCrowdsourcerContribution
-    # need to decide to make these arrays or their own entites, as they are multiple contibutors to a dispute
+    # QUESTION: need to decide to make these arrays or their own entites, as they are multiple contibutors to a dispute
     reporters: [Bytes!]! # from event Contribution
     amountStaked: [BigInt!]!
     description: [String!]!
@@ -76,39 +80,114 @@ type DisputeCrowdsourcer @entity {
     # payout numerators again, prob just update it, from event reedemed
 }
 
-# Events - CompleteSetsPurchased, CompleteSetsSold
-type Sets @entity {
-    id: ID!
-}
-
-
-
-# Events - FeeWindowCreated, FeeWindowRedeemed
-type FeeWindow @entity {
-    id: ID!
-}
-
-# Events - InitialReporterRedeemed, , InitialreporterTransferred
-type InitialReporter @entity {
-    id: ID!
-}
-
-# Events - mint and burn from VariableSupplyToken. And 0xd5524179cb7ae012f5b642c1d6d700bbaa76b96b is the address
-type Cash @entity {
-    id: ID!
-}
-
-# Events - TokensBurned, TokensMinted, TokensTransferred
-type Tokens @entity {
-    id: ID!
+# Events - UniverseCreated, UniverseForked
+type Universe @entity {
+    id: ID! # universe ID
+    parentUniverse: Bytes! # genesis universe does not have a parent
+    #payoutNumerators: [BigInt!]! QUESTION: how does this fit in here, from event UniverseCreated 
+    #universeForked: Boolean QUESTION: is this relevant? From event UniverseForked 
 }
 
 # Events - OrderCanceled, OrderCreated, OrderFilled,
 type Order @entity {
-    id: ID!
+    # event OrderCreated
+    id: ID! # orderID
+    orderType: String! # bid or asked, derived from the enum 
+    amount: BigInt!
+    price: BigInt!
+    creator: Bytes!
+    moneyEscrowed: BigInt!
+    sharesEscrowed: BigInt!
+    tradeGroupID: Bytes!
+    orderId: Bytes!
+    universe: Bytes!
+    shareToken: Bytes!
+
+    # event OrderCanceled
+    sender: Bytes
+    tokenRefund: BigInt
+    sharesRefund: BigInt
+
+    # event OrderFilled
+    # QUESTION: - it might be possible to make MULTIPLE order fills, as you can half fill. I need to confirm but for not I am assuming arrays 
+    filler: [Bytes]
+    numCreatorShares: [BigInt]
+    numCreatorTokens: [BigInt]
+    numFillerShares: [BigInt]
+    numFillerTokens: [BigInt]
+    marketCreatorFees: [BigInt]
+    reporterFees: [BigInt]
+    amountFilled: [BigInt]
+    tradeGroupID: [Bytes]
 }
 
-# Events - UniverseCreated, UniverseForked
-type Universe @entity {
-    id: ID!
+# event TradingProceedsClaimed
+# QUESTION - does this belong back to the market? i.e. should it be an entity relationship, or put directly in there. I assume this is correct right now 
+type TradingProceedsClaimed @entity {
+    id: ID! # market
+    universe: Bytes!
+    shareToken: Bytes!
+    sender: Bytes!
+    numShares: BigInt!
+    numPayoutTokens: BigInt!
+    finalTokenBalance: BigInt
 }
+
+# QUESTION: when does this get instantiated? by tokens minted? or what ? 
+type Tokens @entity {
+    id: ID! # token Address
+    universe: Bytes!
+    market: Bytes!
+    tokenType: String! # derived from enum 
+    tokensTransferred: [TokensTransferred!]!
+    tokensMinted: [TokensMinted!]!
+    tokensBurned: [TokensBurned!]!
+}
+
+# event TokensTransferred
+type TokensTransferred @entity {
+    id: ID!
+    from: Bytes!
+    to: Bytes!
+    value: BigInt!
+}
+
+# event TokensBurned
+type TokensBurned @entity {
+    id: ID!
+    target: BigInt!
+    amount: BigInt!
+}
+
+#event TokensMinted
+type TokensMinted @entity {
+    id: ID!
+    target: BigInt!
+    amount: BigInt!
+}
+
+# event DisputeWindowCreated
+type DisputeWindow @entity {
+    id: ID! # id
+    universe: Bytes!
+    startTime: BigInt!
+    endTime: BigInt!
+    disputeWindow: Bytes!
+}
+
+# Events - FeeWindowCreated, FeeWindowRedeemed
+# QUESTION : WHERE DID I GET THIS FROM ? 
+# type FeeWindow @entity {
+#     id: ID!
+# }
+
+# Events - mint and burn from VariableSupplyToken. And 0xd5524179cb7ae012f5b642c1d6d700bbaa76b96b is the address... this addr might be wrong
+# QUESSTION : DO I WANT TO SOURCE THESE
+# type Cash @entity {
+#     id: ID!
+# }
+
+
+
+
+

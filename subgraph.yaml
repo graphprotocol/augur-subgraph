@@ -12,11 +12,108 @@ dataSources:
       apiVersion: 0.0.1
       language: wasm/assemblyscript
       entities:
-        - Test
+        - Market
+        - InitialReport
+        - DisputeCrowdsourcer
+        - Universe
+        - Order
+        - TradingProceedsClaimed
+        - Token
+        - TokensTransferred
+        - TokensBurned
+        - TokensMinted
+        - DisputeWindow
       abis:
         - name: Augur
           file: ./abis/Augur.json
-      eventHandlers:
-        - event: Transfer()
-          handler: handleTransfer
+      eventHandlers: # 28 total events , leave out EscapeHatchChanged, timestampset, so 26 handlers
+        # Market Handlers below
+        - event: MarketCreated(bytes32,string,string,address,address,address,bytes32[],uint256,int256,int256,uint8)
+          handler: handleMarketCreated
+        - event: ReportingParticipantDisavowed(address,address,address)
+          handler: handleReportingParticpiantDisavowed
+        - event: MarketFinalized(address,address)
+          handler: handleMarketFinalized
+        - event: MarketMigrated(address,address,address)
+          handler: handleMarketMigrated
+        - event: MarketMailboxTransferred(address,address,address,address,address)
+          handler: handleMarketMailboxTransferred
+        - event: MarketParticipantDisavowed(address,address)
+          handler: handleMarketParticipantsDisavowed
+        - event: MarketTransferred(address,address,address)
+          handler: handleMarketTransferred
+        - event: CompleteSetPurchase(address,address,address,uint256)
+          handler: handleCompleteSetPurchase
+        - event: CompleteSetsSold(address,address,address,uint256)
+          handler: handleCompleteSetSold
+        - event: TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256)
+          handler: handleTradingProceedsClaimed (used double)
+          # Initial Report handlers Below
+        - event: InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string)
+          handler: handleInitialReportSubmitted
+        - event: InitialReportRedeemed(address,address,address,uint256,uint256,uint256[])
+          handler: handleInitialReporterRedeemed
+        - event: InitialReporterTransferred(address,address,address,address)
+          handler: handleInitialReporterTransferred
+          # Dispute Crowdsourcer handlers below
+        - event: DisputeCrowdsourcerCompleted(address,address,address)
+          handler: handleDisputeCrowdsourcerCompleted
+        - event: DisputeCrowdsourcerContribution(address,address,address,address,uint256,string)
+          handler: handleDisputeCrowdsourcerContribution
+        - event: DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256)
+          handler: handleDisputeCrowdsourcerCreated
+        - event: DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256[])
+          handler: handleDisputeCrowdsourcerRedeemed
+          # Universe handlers below
+        - event: UniverseCreated(address,address,uint256[])
+          handler: handleUniverseCreated
+        - event: UniverseForked(address)
+          handler: handleUniverseForked
+          # Order handlers below
+        - event: OrderCanceled(address,address,address,bytes32,uint8,uint256,uint256)
+          handler: handleOrderCanceled
+        - event: OrderCreated(uint8,uint256,uint256,address,uint256,uint256,bytes32,bytes32,address,address)
+          handler: handleOrderCreated
+        - event: OrderFilled(address,address,address,bytes32,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bytes32)
+          handler: handleOrderFilled
+          # token handlers below
+        - event: TokensTransferred(address,address,address,address,uint256,int8,address)
+          handler: handleTokensTransferred
+        - event: TokensMinted(address,address,address,uint256,uint8,address)
+          handler: handleTokensBurned
+        - event: TokensBurned(address,address,address,uint256,uint8,address)
+          handler: handleTokensMinted
+          # dispute window handler below
+        - event: DisputeWindowCreated(address,address,uint256,uint256,uint256)
+          handler: handleDisputeWindowCreated
       file: ./mappings/Augur.ts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,7 +1,8 @@
 # Unused Events - Approval, Transfer (ERC20)
 # Events not stored - EscapeHatchChanged, TimestampSet, 
 
-# Events - MarketCreated, ReportingParticipantDisavowed, MarketFinalized, MarketMigrated, MarketMailboxTransferred, MarketParticipantsDisavowed, MarketTransferred, CompleteSetPurchase, CompleteSetSold
+# Events - MarketCreated, ReportingParticipantDisavowed, MarketFinalized, MarketMigrated, MarketMailboxTransferred, MarketParticipantsDisavowed, MarketTransferred, CompleteSetPurchase, CompleteSetSold,  TradingProceedsClaimed
+
 type Market @entity {
     # event MarketCreated 
     id: ID! # address market
@@ -10,7 +11,7 @@ type Market @entity {
     extraInfo: String 
     universe: Bytes! # an address
     marketCreator: Bytes!
-    outcomes: [Bytes!]! # QUESTION: Might be a special way to handle this, see dharma
+    outcomes: [Bytes!]! 
     marketCreationFee: BigInt
     minPrice: BigInt
     maxPrice: BigInt
@@ -38,6 +39,9 @@ type Market @entity {
 
     # event MarketMailboxTransferred
     marketMailboxOwners: [Bytes!]! # QUESTION: how does this work? need to test live with array
+
+    # event TradingProceedsClaimed
+    tradingProceedsClaimed: [TradingProceedsClaimed!]!
 }
 
 # Events - InitialReportSubmitted, InitialReporterRedeemed, InitialReporterTransferred
@@ -45,10 +49,10 @@ type InitialReport @entity {
     # event InitialReportSubmitted
     id: ID! # address market
     universe: Bytes!
-    reporter: Bytes! # ONLY FIELD EDITED BY INITIALREPORTERTRANSFERRED -  QUESTION: do I want to keep a list of all previous reporters
+    reporter: [Bytes!]! # ONLY FIELD EDITED BY INITIALREPORTERTRANSFERRED -  QUESTION: do I want to keep a list of all previous reporters? i will have an array for now 
     amountStaked: BigInt!
     isDesignatedReported: Bool # false null bug, no !
-    payoutNumerators: [BigInt!]! # QUESTION: see dharma
+    payoutNumerators: [BigInt!]! 
     description: String
 
     #event InitialReporterRedeemed 
@@ -62,7 +66,7 @@ type DisputeCrowdsourcer @entity {
     id: ID! # address market
     universe: Bytes!
     disputeCrowdsourcer: Bytes!
-    payoutNumerators: [BigInt!]! # QUESTION: see dharma
+    payoutNumerators: [BigInt!]!
     size: BigInt
 
     # event DisputeCrowdsourcerContribution
@@ -84,8 +88,8 @@ type DisputeCrowdsourcer @entity {
 type Universe @entity {
     id: ID! # universe ID
     parentUniverse: Bytes! # genesis universe does not have a parent
-    #payoutNumerators: [BigInt!]! QUESTION: how does this fit in here, from event UniverseCreated 
-    #universeForked: Boolean QUESTION: is this relevant? From event UniverseForked 
+    payoutNumerators: [BigInt!]! # QUESTION: how does this fit in here, from event UniverseCreated . test live 
+    universeForked: Boolean # QUESTION: is this relevant? From event UniverseForked test live
 }
 
 # Events - OrderCanceled, OrderCreated, OrderFilled,
@@ -109,7 +113,7 @@ type Order @entity {
     sharesRefund: BigInt
 
     # event OrderFilled
-    # QUESTION: - it might be possible to make MULTIPLE order fills, as you can half fill. I need to confirm but for not I am assuming arrays 
+    # QUESTION: - it might be possible to make MULTIPLE order fills, as you can half fill. I need to confirm but for now I am assuming arrays 
     filler: [Bytes]
     numCreatorShares: [BigInt]
     numCreatorTokens: [BigInt]
@@ -121,8 +125,8 @@ type Order @entity {
     tradeGroupID: [Bytes]
 }
 
-# event TradingProceedsClaimed
-# QUESTION - does this belong back to the market? i.e. should it be an entity relationship, or put directly in there. I assume this is correct right now 
+# event TradingProceedsClaimed (also used in Market)
+# QUESTION - does this belong back to the market? i.e. should it be an entity relationship, or put directly in there. I assume this is correct right now . so adding it in
 type TradingProceedsClaimed @entity {
     id: ID! # market
     universe: Bytes!
@@ -134,7 +138,7 @@ type TradingProceedsClaimed @entity {
 }
 
 # QUESTION: when does this get instantiated? by tokens minted? or what ? 
-type Tokens @entity {
+type Token @entity {
     id: ID! # token Address
     universe: Bytes!
     market: Bytes!
@@ -159,7 +163,8 @@ type TokensBurned @entity {
     amount: BigInt!
 }
 
-#event TokensMinted
+# event TokensMinted
+# NOTE: this one creates the instance of the token, for the mapping 
 type TokensMinted @entity {
     id: ID!
     target: BigInt!

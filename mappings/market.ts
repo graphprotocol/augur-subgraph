@@ -3,7 +3,7 @@ import 'allocator/arena'
 export { allocate_memory }
 
 // Import APIs from graph-ts
-import { store, Bytes } from '@graphprotocol/graph-ts'
+import { store, Bytes, BigInt} from '@graphprotocol/graph-ts'
 
 // Import event types from the registrar contract ABI
 import {
@@ -20,8 +20,7 @@ import {
 } from '../types/Augur/Augur'
 
 // Import entity types from the schema
-import { Market, ClaimedTradingProceeds } from '../types/schema'
-import {BigInt} from "../../../graph-ts";
+import { Market, ClaimedTradingProceed } from '../types/schema'
 
 export function handleMarketCreated(event: MarketCreated): void {
   let id = event.params.market.toHex()
@@ -38,10 +37,11 @@ export function handleMarketCreated(event: MarketCreated): void {
   market.maxPrice = event.params.maxPrice
   market.reportingParticipantDisavowed = new Array<Bytes>()
   market.marketOwners = new Array<Bytes>()
-  market.completeSetPurchaser = new Array<Bytes>()
-  market.completeSetsPurchaserNum = new Array<BigInt>()
-  market.completeSetSeller = new Array<Bytes>()
-  market.completeSetsSellerNum = new Array<BigInt>()
+  market.marketMailboxOwners = new Array<Bytes>()
+  market.completeSetPurchasers = new Array<Bytes>()
+  market.numCompleteSetsPurchase = new Array<BigInt>()
+  market.completeSetSellers = new Array<Bytes>()
+  market.numCompleteSetsSold = new Array<BigInt>()
   market.tradingProceedsClaimed = new Array<string>()
 
 
@@ -61,6 +61,7 @@ export function handleMarketCreated(event: MarketCreated): void {
 }
 
 // NOTE: original universe let out here. same question as before
+// NOTE: Never emitted on mainnet
 export function handleReportingParticpiantDisavowed(event: ReportingParticipantDisavowed): void {
   let id = event.params.market.toHex()
   let market = store.get("Market", id) as Market
@@ -139,9 +140,9 @@ export function handleCompleteSetPurchased(event: CompleteSetsPurchased): void {
   purchasers.push(event.params.account)
   market.completeSetPurchasers = purchasers
 
-  let nums = market.completeSetsPurchaserNum
+  let nums = market.numCompleteSetsPurchase
   nums.push(event.params.numCompleteSets)
-  market.completeSetsPurchaserNum = nums
+  market.numCompleteSetsPurchase = nums
 
   store.set("Market", id, market)
 }
@@ -154,18 +155,18 @@ export function handleCompleteSetSold(event: CompleteSetsSold): void {
   sellers.push(event.params.account)
   market.completeSetSellers = sellers
 
-  let nums = market.completeSetsSellerNum
+  let nums = market.numCompleteSetsSold
   nums.push(event.params.numCompleteSets)
-  market.completeSetsSellerNum = nums
+  market.numCompleteSetsSold = nums
 
   store.set("Market", id, market)
 }
 
 export function handleTradingProceedsClaimed(event: TradingProceedsClaimed): void {
   let id = event.params.market.toHex()
-  let tpc = store.get("ClaimedTradingProceeds", id) as ClaimedTradingProceeds | null
+  let tpc = store.get("ClaimedTradingProceed", id) as ClaimedTradingProceed | null
   if (tpc == null) {
-    tpc = new ClaimedTradingProceeds()
+    tpc = new ClaimedTradingProceed()
   }
   tpc.universe = event.params.universe
   tpc.shareToken = event.params.shareToken
@@ -173,5 +174,7 @@ export function handleTradingProceedsClaimed(event: TradingProceedsClaimed): voi
   tpc.numShares = event.params.numShares
   tpc.numPayoutTokens = event.params.numPayoutTokens
   tpc.finalTokenBalance = event.params.finalTokenBalance
+
+  store.set("ClaimedTradingProceed", id, tpc as ClaimedTradingProceed)
 }
 

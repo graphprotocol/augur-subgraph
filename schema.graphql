@@ -29,12 +29,6 @@ type Market @entity {
     # event MarketMigrated
     migrated: Bytes
 
-    # event CompleteSetPurchase
-    numCompleteSetsPurchase: BigInt
-
-    # event CompleteSetsSold
-    numCompleteSetsSold: BigInt
-
     # event MarketTransferred
     marketOwners: [Bytes!]! # QUESTION: how does this work? need to test live with array
 
@@ -43,14 +37,14 @@ type Market @entity {
 
     # event CompleteSetPurchase
     completeSetPurchasers: [Bytes!]!
-    completeSetsPurchaserNum: [BigInt!]!
+    numCompleteSetsPurchase: [BigInt!]!
 
     # event CompleteSetSold
     completeSetSellers: [Bytes!]!
-    completeSetsSellerNum: [BigInt!]!
+    numCompleteSetsSold: [BigInt!]!
 
     # event TradingProceedsClaimed
-    tradingProceedsClaimed: [ClaimedTradingProceeds!]!
+    tradingProceedsClaimed: [ClaimedTradingProceed!]! @derivedFrom(field: "id")
 }
 
 # Events - InitialReportSubmitted, InitialReporterRedeemed, InitialReporterTransferred
@@ -136,7 +130,7 @@ type Order @entity {
 
 # event TradingProceedsClaimed (also used in Market)
 # QUESTION - does this belong back to the market? i.e. should it be an entity relationship, or put directly in there. I assume this is correct right now . so adding it in
-type ClaimedTradingProceeds @entity {
+type ClaimedTradingProceed @entity {
     id: ID! # market
     universe: Bytes!
     shareToken: Bytes!

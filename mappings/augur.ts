@@ -2,7 +2,8 @@
 import 'allocator/arena'
 export { allocate_memory }
 
-
+// imports
 import {handleMarketCreated, handleMarketFinalized, handleReportingParticpiantDisavowed, handleMarketMigrated, handleMarketMailboxTransferred} from "./market";
 
+// exports
 export {handleMarketCreated, handleMarketFinalized, handleReportingParticpiantDisavowed, handleMarketMigrated, handleMarketMailboxTransferred}

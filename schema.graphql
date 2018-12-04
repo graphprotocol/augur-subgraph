@@ -41,8 +41,16 @@ type Market @entity {
     # event MarketMailboxTransferred
     marketMailboxOwners: [Bytes!]! # QUESTION: how does this work? need to test live with array
 
+    # event CompleteSetPurchase
+    completeSetPurchasers: [Bytes!]!
+    completeSetsPurchaserNum: [BigInt!]!
+
+    # event CompleteSetSold
+    completeSetSellers: [Bytes!]!
+    completeSetsSellerNum: [BigInt!]!
+
     # event TradingProceedsClaimed
-    tradingProceedsClaimed: [TradingProceedsClaimed!]!
+    tradingProceedsClaimed: [ClaimedTradingProceeds!]!
 }
 
 # Events - InitialReportSubmitted, InitialReporterRedeemed, InitialReporterTransferred
@@ -179,6 +187,13 @@ type DisputeWindow @entity {
     startTime: BigInt!
     endTime: BigInt!
     disputeWindow: Bytes!
+}
+
+# TODO: user should be created and searched up in any interaction with the contracts 
+type User @entity {
+    id: ID! # user account
+    # completeSetsPurchased: TODO, not sure if i need. no , it isnt what i thought. keeping it in the Market
+    # completeSetsSold: TODO, not sure if i need. no , it isnt what i thought. keeping it in the Market
 }
 
 # Events - FeeWindowCreated, FeeWindowRedeemed

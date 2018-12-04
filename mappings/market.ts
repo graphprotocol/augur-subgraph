@@ -21,6 +21,7 @@ import {
 
 // Import entity types from the schema
 import { Market, ClaimedTradingProceeds } from '../types/schema'
+import {BigInt} from "../../../graph-ts";
 
 export function handleMarketCreated(event: MarketCreated): void {
   let id = event.params.market.toHex()
@@ -35,8 +36,14 @@ export function handleMarketCreated(event: MarketCreated): void {
   market.marketCreationFee = event.params.marketCreationFee
   market.minPrice = event.params.minPrice
   market.maxPrice = event.params.maxPrice
-  market.marketOwners = new Array<Bytes>()
   market.reportingParticipantDisavowed = new Array<Bytes>()
+  market.marketOwners = new Array<Bytes>()
+  market.completeSetPurchaser = new Array<Bytes>()
+  market.completeSetsPurchaserNum = new Array<BigInt>()
+  market.completeSetSeller = new Array<Bytes>()
+  market.completeSetsSellerNum = new Array<BigInt>()
+  market.tradingProceedsClaimed = new Array<string>()
+
 
   let marketTypeEnum = event.params.marketType
   let marketTypeName:string;
@@ -122,5 +129,49 @@ export function handleMarketTransferred(event: MarketTransferred): void {
   market.marketOwners = marketOwners
 
   store.set("Market", id, market)
+}
+
+export function handleCompleteSetPurchased(event: CompleteSetsPurchased): void {
+  let id = event.params.market.toHex()
+  let market = store.get("Market", id) as Market
+
+  let purchasers = market.completeSetPurchasers
+  purchasers.push(event.params.account)
+  market.completeSetPurchasers = purchasers
+
+  let nums = market.completeSetsPurchaserNum
+  nums.push(event.params.numCompleteSets)
+  market.completeSetsPurchaserNum = nums
+
+  store.set("Market", id, market)
+}
+
+export function handleCompleteSetSold(event: CompleteSetsSold): void {
+  let id = event.params.market.toHex()
+  let market = store.get("Market", id) as Market
+
+  let sellers = market.completeSetSellers
+  sellers.push(event.params.account)
+  market.completeSetSellers = sellers
+
+  let nums = market.completeSetsSellerNum
+  nums.push(event.params.numCompleteSets)
+  market.completeSetsSellerNum = nums
+
+  store.set("Market", id, market)
+}
+
+export function handleTradingProceedsClaimed(event: TradingProceedsClaimed): void {
+  let id = event.params.market.toHex()
+  let tpc = store.get("ClaimedTradingProceeds", id) as ClaimedTradingProceeds | null
+  if (tpc == null) {
+    tpc = new ClaimedTradingProceeds()
+  }
+  tpc.universe = event.params.universe
+  tpc.shareToken = event.params.shareToken
+  tpc.sender = event.params.sender
+  tpc.numShares = event.params.numShares
+  tpc.numPayoutTokens = event.params.numPayoutTokens
+  tpc.finalTokenBalance = event.params.finalTokenBalance
 }
 

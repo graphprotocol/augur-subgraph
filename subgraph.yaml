@@ -42,12 +42,12 @@ dataSources:
           handler: handleMarketParticipantsDisavowed
         - event: MarketTransferred(address,address,address)
           handler: handleMarketTransferred
-#        - event: CompleteSetsPurchased(address,address,address,uint256)
-#          handler: handleCompleteSetPurchase
-#        - event: CompleteSetsSold(address,address,address,uint256)
-#          handler: handleCompleteSetSold
-#        - event: TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256)
-#          handler: handleTradingProceedsClaimed (used double)
+        - event: CompleteSetsPurchased(address,address,address,uint256)
+          handler: handleCompleteSetPurchased
+        - event: CompleteSetsSold(address,address,address,uint256)
+          handler: handleCompleteSetSold
+        - event: TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256)
+          handler: handleTradingProceedsClaimed
 #          # Initial Report handlers Below
 #        - event: InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string)
 #          handler: handleInitialReportSubmitted

@@ -65,10 +65,10 @@ dataSources:
         - event: DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256,uint256[])
           handler: handleDisputeCrowdsourcerRedeemed
 #          # Universe handlers below
-#        - event: UniverseCreated(address,address,uint256[])
-#          handler: handleUniverseCreated
-#        - event: UniverseForked(address)
-#          handler: handleUniverseForked
+        - event: UniverseCreated(address,address,uint256[],bool)
+          handler: handleUniverseCreated
+        - event: UniverseForked(address)
+          handler: handleUniverseForked
 #          # Order handlers below
 #        - event: OrderCanceled(address,address,address,bytes32,uint8,uint256,uint256)
 #          handler: handleOrderCanceled
@@ -86,7 +86,7 @@ dataSources:
 #          # dispute window handler below
 #        - event: DisputeWindowCreated(address,address,uint256,uint256,uint256)
 #          handler: handleDisputeWindowCreated
-      file: ./mappings/Augur.ts
+      file: ./src/mappings/Augur.ts
 
 
 

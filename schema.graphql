@@ -96,7 +96,8 @@ type Universe @entity {
     id: ID! # universe ID
     parentUniverse: Bytes! # genesis universe does not have a parent
     payoutNumerators: [BigInt!]! # QUESTION: how does this fit in here, from event UniverseCreated . test live 
-    universeForked: Boolean # QUESTION: is this relevant? From event UniverseForked test live
+    forked: Boolean # QUESTION: is this relevant? From event UniverseForked test live
+    invalid: Boolean
 }
 
 # Events - OrderCanceled, OrderCreated, OrderFilled,

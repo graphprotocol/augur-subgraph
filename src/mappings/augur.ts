@@ -29,7 +29,10 @@ import {
   handleDisputeCrowdsourcerRedeemed
 } from "./disputeCrowdsourcer";
 
-
+import {
+  handleUniverseCreated,
+  handleUniverseForked
+} from "./universe";
 // exports
 export {
   handleMarketCreated,
@@ -48,5 +51,7 @@ export {
   handleDisputeCrowdsourcerCompleted,
   handleDisputeCrowdsourcerContribution,
   handleDisputeCrowdsourcerCreated,
-  handleDisputeCrowdsourcerRedeemed
+  handleDisputeCrowdsourcerRedeemed,
+  handleUniverseCreated,
+  handleUniverseForked
 }

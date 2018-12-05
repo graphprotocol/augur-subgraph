@@ -40,7 +40,6 @@ export function handleInitialReporterRedeemed(event: InitialReporterRedeemed): v
   store.set("InitialReport", id, ir)
 }
 
-//     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
 export function handleInitialReporterTransferred(event: InitialReporterTransferred): void {
   let id = event.params.market.toHex()
   let ir = store.get("InitialReport", id) as InitialReport

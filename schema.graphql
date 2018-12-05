@@ -75,12 +75,12 @@ type DisputeCrowdsourcer @entity {
     disputeCrowdsourcer: Bytes!
     payoutNumerators: [BigInt!]!
     size: BigInt
+    invalid: Boolean
 
     # event DisputeCrowdsourcerContribution
-    # QUESTION: need to decide to make these arrays or their own entites, as they are multiple contibutors to a dispute
-    reporters: [Bytes!]! # from event Contribution
+    # Each element in these two arrays represents one contribution, i.e. all 0 elements are from the same event, and so on
+    reporters: [Bytes!]!
     amountStaked: [BigInt!]!
-    description: [String!]!
 
     # event DisputeCrowdsourcerCompleted
     completed: Boolean # this gets triggered true when event Completed is done 
@@ -88,7 +88,7 @@ type DisputeCrowdsourcer @entity {
     # event DisputeCrowdsourcedRedeemed
     amountRedeemed: [BigInt!]! #event Redeemed
     repReceived: [BigInt!]! #event Redeemed
-    # payout numerators again, prob just update it, from event reedemed
+    reportingFeesReceived: [BigInt!]!
 }
 
 # Events - UniverseCreated, UniverseForked

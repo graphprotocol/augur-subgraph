@@ -56,14 +56,14 @@ dataSources:
         - event: InitialReporterTransferred(address,address,address,address)
           handler: handleInitialReporterTransferred
 #          # Dispute Crowdsourcer handlers below
-#        - event: DisputeCrowdsourcerCompleted(address,address,address)
-#          handler: handleDisputeCrowdsourcerCompleted
-#        - event: DisputeCrowdsourcerContribution(address,address,address,address,uint256,string)
-#          handler: handleDisputeCrowdsourcerContribution
-#        - event: DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256)
-#          handler: handleDisputeCrowdsourcerCreated
-#        - event: DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256[])
-#          handler: handleDisputeCrowdsourcerRedeemed
+        - event: DisputeCrowdsourcerCompleted(address,address,address)
+          handler: handleDisputeCrowdsourcerCompleted
+        - event: DisputeCrowdsourcerContribution(address,address,address,address,uint256)
+          handler: handleDisputeCrowdsourcerContribution
+        - event: DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256,bool)
+          handler: handleDisputeCrowdsourcerCreated
+        - event: DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256,uint256[])
+          handler: handleDisputeCrowdsourcerRedeemed
 #          # Universe handlers below
 #        - event: UniverseCreated(address,address,uint256[])
 #          handler: handleUniverseCreated

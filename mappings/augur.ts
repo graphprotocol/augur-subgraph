@@ -22,7 +22,12 @@ import {
   handleInitialReporterTransferred
 } from "./initialReport";
 
-
+import {
+  handleDisputeCrowdsourcerCompleted,
+  handleDisputeCrowdsourcerContribution,
+  handleDisputeCrowdsourcerCreated,
+  handleDisputeCrowdsourcerRedeemed
+} from "./disputeCrowdsourcer";
 
 
 // exports
@@ -39,5 +44,9 @@ export {
   handleTradingProceedsClaimed,
   handleInitialReportSubmitted,
   handleInitialReporterRedeemed,
-  handleInitialReporterTransferred
+  handleInitialReporterTransferred,
+  handleDisputeCrowdsourcerCompleted,
+  handleDisputeCrowdsourcerContribution,
+  handleDisputeCrowdsourcerCreated,
+  handleDisputeCrowdsourcerRedeemed
 }

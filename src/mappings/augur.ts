@@ -33,6 +33,14 @@ import {
   handleUniverseCreated,
   handleUniverseForked
 } from "./universe";
+
+import {
+  handleOrderCanceled,
+  handleOrderCreated,
+  handleOrderFilled
+} from "./order";
+
+
 // exports
 export {
   handleMarketCreated,
@@ -53,5 +61,8 @@ export {
   handleDisputeCrowdsourcerCreated,
   handleDisputeCrowdsourcerRedeemed,
   handleUniverseCreated,
-  handleUniverseForked
+  handleUniverseForked,
+  handleOrderCanceled,
+  handleOrderCreated,
+  handleOrderFilled
 }

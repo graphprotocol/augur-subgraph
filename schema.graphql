@@ -105,19 +105,18 @@ type Universe @entity {
 type Order @entity {
     # event OrderCreated
     id: ID! # orderID
-    orderType: String! # bid or asked, derived from the enum 
+    orderType: String! # bid or asked, derived from the enum
     amount: BigInt!
     price: BigInt!
     creator: Bytes!
     moneyEscrowed: BigInt!
     sharesEscrowed: BigInt!
     tradeGroupIDCreator: Bytes!
-    orderId: Bytes!
     universe: Bytes!
     shareToken: Bytes!
 
     # event OrderCanceled
-    sender: Bytes
+    canceller: Bytes
     tokenRefund: BigInt
     sharesRefund: BigInt
 

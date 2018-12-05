@@ -70,12 +70,12 @@ dataSources:
         - event: UniverseForked(address)
           handler: handleUniverseForked
 #          # Order handlers below
-#        - event: OrderCanceled(address,address,address,bytes32,uint8,uint256,uint256)
-#          handler: handleOrderCanceled
-#        - event: OrderCreated(uint8,uint256,uint256,address,uint256,uint256,bytes32,bytes32,address,address)
-#          handler: handleOrderCreated
-#        - event: OrderFilled(address,address,address,bytes32,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bytes32)
-#          handler: handleOrderFilled
+        - event: OrderCanceled(address,address,address,bytes32,uint8,uint256,uint256)
+          handler: handleOrderCanceled
+        - event: OrderCreated(uint8,uint256,uint256,address,uint256,uint256,bytes32,bytes32,address,address)
+          handler: handleOrderCreated
+        - event: OrderFilled(address,address,address,bytes32,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bytes32)
+          handler: handleOrderFilled
 #          # token handlers below
 #        - event: TokensTransferred(address,address,address,address,uint256,int8,address)
 #          handler: handleTokensTransferred

@@ -145,39 +145,22 @@ type ClaimedTradingProceed @entity {
     finalTokenBalance: BigInt
 }
 
-# QUESTION: when does this get instantiated? by tokens minted? or what ? and then how to link it back to the Market entity?
+# instantiated by TokenMinted
+# event TokenMinted, TokenBurned, TokenTransferred
 type Token @entity {
     id: ID! # token Address
     universe: Bytes!
     market: Bytes!
-    tokenType: String! # derived from enum 
-    tokensTransferred: [TokensTransferred!]!
-    tokensMinted: [TokensMinted!]!
-    tokensBurned: [TokensBurned!]!
+    tokenType: String! # derived from enum
+    owners: [TokenOwner!]! @derivedFrom(field: "tokenAddress")
 }
 
-# event TokensTransferred
-type TokensTransferred @entity {
-    id: ID!
-    from: Bytes!
-    to: Bytes!
-    value: BigInt!
-}
-
-# event TokensBurned
-type TokensBurned @entity {
-    id: ID!
-    target: BigInt!
+type TokenOwner @entity {
+    id: ID! # concatenation of token address and owner
+    tokenAddress: Bytes!
     amount: BigInt!
 }
 
-# event TokensMinted
-# NOTE: this one creates the instance of the token, for the mapping 
-type TokensMinted @entity {
-    id: ID!
-    target: BigInt!
-    amount: BigInt!
-}
 
 # event DisputeWindowCreated
 type DisputeWindow @entity {
@@ -193,20 +176,6 @@ type User @entity {
     id: ID! # user account
     # completeSetsPurchased: TODO, not sure if i need. no , it isnt what i thought. keeping it in the Market
     # completeSetsSold: TODO, not sure if i need. no , it isnt what i thought. keeping it in the Market
-}
-
-# Events - FeeWindowCreated, FeeWindowRedeemed
-# QUESTION : WHERE DID I GET THIS FROM ? 
-# type FeeWindow @entity {
-#     id: ID!
-# }
-
-# Events - mint and burn from VariableSupplyToken. And 0xd5524179cb7ae012f5b642c1d6d700bbaa76b96b is the address... this addr might be wrong
-# QUESSTION : DO I WANT TO SOURCE THESE
-# type Cash @entity {
-#     id: ID!
-# }
-
 
 
 

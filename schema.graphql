@@ -45,6 +45,8 @@ type Market @entity {
 
     # event TradingProceedsClaimed
     tradingProceedsClaimed: [ClaimedTradingProceed!]! @derivedFrom(field: "id")
+    initialReports: [InitialReport!]! @derivedFrom(field:"id")
+    disputeCrowdsourcer: [DisputeCrowdsourcer!]! @derivedFrom(field: "id")
 }
 
 # Events - InitialReportSubmitted, InitialReporterRedeemed, InitialReporterTransferred
@@ -52,15 +54,17 @@ type InitialReport @entity {
     # event InitialReportSubmitted
     id: ID! # address market
     universe: Bytes!
-    reporter: [Bytes!]! # ONLY FIELD EDITED BY INITIALREPORTERTRANSFERRED -  QUESTION: do I want to keep a list of all previous reporters? i will have an array for now 
     amountStaked: BigInt!
     isDesignatedReported: Boolean # false null bug, no !
-    payoutNumerators: [BigInt!]! 
-    description: String
+    payoutNumerators: [BigInt!]!
+    invalid: Boolean
+
+    reporter: Bytes! # ONLY FIELD EDITED BY InitialReporterTransferred -
 
     #event InitialReporterRedeemed 
-    amountRedeemed: BigInt!
-    repReceived: BigInt!
+    amountRedeemed: BigInt
+    repReceived: BigInt
+    reportingFeesReceived: BigInt
 }
 
 # Events - DisputeCrowdsourcerCompleted, DisputeCrowdsourcerContribution, DisputeCrowdsourcerCreated, DisputeCrowdSourcerRedeemed
@@ -96,6 +100,7 @@ type Universe @entity {
 }
 
 # Events - OrderCanceled, OrderCreated, OrderFilled,
+# note - I find it weird that there is no way to connect orders to a market
 type Order @entity {
     # event OrderCreated
     id: ID! # orderID
@@ -140,7 +145,7 @@ type ClaimedTradingProceed @entity {
     finalTokenBalance: BigInt
 }
 
-# QUESTION: when does this get instantiated? by tokens minted? or what ? 
+# QUESTION: when does this get instantiated? by tokens minted? or what ? and then how to link it back to the Market entity?
 type Token @entity {
     id: ID! # token Address
     universe: Bytes!

@@ -2,6 +2,10 @@
 Subgraph for the Augur protocol 
 
 
+## Source Code
+
+We are using the exact source code and abi from [etherscan](https://etherscan.io/address/0x75228dce4d82566d93068a8d5d49435216551599#code), as the code from the master branch on github is updated, as Augur was launched on mainnet months ago. 
+
 ## Query
 
 {

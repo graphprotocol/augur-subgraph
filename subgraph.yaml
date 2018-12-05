@@ -49,12 +49,12 @@ dataSources:
         - event: TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256)
           handler: handleTradingProceedsClaimed
 #          # Initial Report handlers Below
-#        - event: InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string)
-#          handler: handleInitialReportSubmitted
-#        - event: InitialReportRedeemed(address,address,address,uint256,uint256,uint256[])
-#          handler: handleInitialReporterRedeemed
-#        - event: InitialReporterTransferred(address,address,address,address)
-#          handler: handleInitialReporterTransferred
+        - event: InitialReportSubmitted(address,address,address,uint256,bool,uint256[],bool)
+          handler: handleInitialReportSubmitted
+        - event: InitialReportRedeemed(address,address,address,uint256,uint256,uint256,uint256[])
+          handler: handleInitialReporterRedeemed
+        - event: InitialReporterTransferred(address,address,address,address)
+          handler: handleInitialReporterTransferred
 #          # Dispute Crowdsourcer handlers below
 #        - event: DisputeCrowdsourcerCompleted(address,address,address)
 #          handler: handleDisputeCrowdsourcerCompleted

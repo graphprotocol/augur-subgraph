@@ -16,6 +16,15 @@ import {
   handleTradingProceedsClaimed
 } from "./market";
 
+import {
+  handleInitialReportSubmitted,
+  handleInitialReporterRedeemed,
+  handleInitialReporterTransferred
+} from "./initialReport";
+
+
+
+
 // exports
 export {
   handleMarketCreated,
@@ -27,5 +36,8 @@ export {
   handleMarketTransferred,
   handleCompleteSetPurchased,
   handleCompleteSetSold,
-  handleTradingProceedsClaimed
+  handleTradingProceedsClaimed,
+  handleInitialReportSubmitted,
+  handleInitialReporterRedeemed,
+  handleInitialReporterTransferred
 }

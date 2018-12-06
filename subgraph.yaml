@@ -77,13 +77,13 @@ dataSources:
         - event: OrderFilled(address,address,address,bytes32,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bytes32)
           handler: handleOrderFilled
           # token handlers below
-        - event: TokensTransferred(address,address,address,address,uint256,uint8,address)
-          handler: handleTokensTransferred
-        - event: TokensMinted(address,address,address,uint256,uint8,address)
-          handler: handleTokensMinted
-        - event: TokensBurned(address,address,address,uint256,uint8,address)
-          handler: handleTokensBurned
-#          # dispute window handler below
+#        - event: TokensTransferred(address,address,address,address,uint256,uint8,address)
+#          handler: handleTokensTransferred
+#        - event: TokensMinted(address,address,address,uint256,uint8,address)
+#          handler: handleTokensMinted
+#        - event: TokensBurned(address,address,address,uint256,uint8,address)
+#          handler: handleTokensBurned
+#          # dispute window handler below NOTE: does not exist on the current mainnet version
 #        - event: DisputeWindowCreated(address,address,uint256,uint256,uint256)
 #          handler: handleDisputeWindowCreated
       file: ./src/mappings/Augur.ts

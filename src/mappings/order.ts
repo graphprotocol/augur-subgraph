@@ -13,7 +13,7 @@ import {
 } from '../types/Augur/Augur'
 
 // Import entity types from the schema
-import {Order} from '../types/schema'
+import {Order, User} from '../types/schema'
 
 export function handleOrderCanceled(event: OrderCanceled): void {
   let id = event.params.orderId.toHex()
@@ -24,6 +24,27 @@ export function handleOrderCanceled(event: OrderCanceled): void {
   order.sharesRefund = event.params.sharesRefund
 
   store.set("Order", id, order)
+
+  // User data below
+  let userID = event.params.sender.toHex()
+  let user = store.get("User", userID) as User | null
+  if (user == null) {
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    user.tokensOwned = new Array<string>()
+  }
+
+  let oc = user.ordersCancelled
+  oc.push(event.params.orderId)
+  user.ordersCancelled = oc
+
+  store.set("User", userID, user  as User)
 }
 
 export function handleOrderCreated(event: OrderCreated): void {
@@ -31,7 +52,7 @@ export function handleOrderCreated(event: OrderCreated): void {
   let order = new Order()
 
   let orderType = event.params.orderType
-  if (orderType == 0){
+  if (orderType == 0) {
     order.orderType = "Bid"
   } else {
     order.orderType = "Ask"
@@ -57,6 +78,27 @@ export function handleOrderCreated(event: OrderCreated): void {
   order.tradeGroupIDFilled = new Array<Bytes>()
 
   store.set("Order", id, order)
+
+  // User data below
+  let userID = event.params.creator.toHex()
+  let user = store.get("User", userID) as User | null
+  if (user == null) {
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    user.tokensOwned = new Array<string>()
+  }
+
+  let oc = user.ordersCreated
+  oc.push(event.params.orderId)
+  user.ordersCreated = oc
+
+  store.set("User", userID, user as User)
 }
 
 export function handleOrderFilled(event: OrderFilled): void {
@@ -100,4 +142,25 @@ export function handleOrderFilled(event: OrderFilled): void {
   order.tradeGroupIDFilled = tradeGroupIDFilled
 
   store.set("Order", id, order)
+
+  // User data below
+  let userID = event.params.filler.toHex()
+  let user = store.get("User", userID) as User | null
+  if (user == null) {
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    user.tokensOwned = new Array<string>()
+  }
+
+  let ordersFilled = user.ordersFilled
+  ordersFilled.push(event.params.orderId)
+  user.ordersFilled = ordersFilled
+
+  store.set("User", userID, user as User)
 }

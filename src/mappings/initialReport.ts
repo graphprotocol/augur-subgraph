@@ -13,7 +13,7 @@ import {
 } from '../types/Augur/Augur'
 
 // Import entity types from the schema
-import { InitialReport } from '../types/schema'
+import {InitialReport, User} from '../types/schema'
 
 export function handleInitialReportSubmitted(event: InitialReportSubmitted): void {
   let id = event.params.market.toHex()
@@ -22,11 +22,27 @@ export function handleInitialReportSubmitted(event: InitialReportSubmitted): voi
   ir.universe = event.params.universe
   ir.reporter = event.params.reporter
   ir.amountStaked = event.params.amountStaked
-  ir.isDesignatedReported = event.params.isDesignatedReporter
+  ir.isDesignatedReporter = event.params.isDesignatedReporter
   ir.payoutNumerators = event.params.payoutNumerators
   ir.invalid = event.params.invalid
 
   store.set("InitialReport", id, ir)
+
+  // User data below
+  let userID = event.params.reporter.toHex()
+  let user = store.get("User", userID) as User |null
+  if (user == null){
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    store.set("User", userID, user as User)
+  }
+
 }
 
 export function handleInitialReporterRedeemed(event: InitialReporterRedeemed): void {
@@ -47,5 +63,22 @@ export function handleInitialReporterTransferred(event: InitialReporterTransferr
   ir.reporter = event.params.to
 
   store.set("InitialReport", id, ir)
+
+  // User data below
+  let userID = event.params.to.toHex()
+  let user = store.get("User", userID) as User |null
+  if (user == null){
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    user.tokensOwned = new Array<string>()
+    store.set("User", userID, user as User)
+  }
+
 
 }

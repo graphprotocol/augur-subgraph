@@ -7,9 +7,9 @@ type Market @entity {
     # event MarketCreated 
     id: ID! # address market
     topic: Bytes!
-    description: String # I think its not required
+    description: String
     extraInfo: String 
-    universe: Bytes! # an address
+    universe: Bytes!
     marketCreator: Bytes!
     outcomes: [Bytes!]! 
     marketCreationFee: BigInt
@@ -17,8 +17,8 @@ type Market @entity {
     maxPrice: BigInt
     marketType: String!
 
-    # event ReportingParticipantDisavowed
-    reportingParticipantDisavowed: [Bytes!]! # QUESTION: , not clear if this is an array of participants or only one participant. I would assume it's one but will need to double check 
+    # event ReportingParticipantDisavowed (NOTE, never emitted)
+    reportingParticipantDisavowed: [Bytes!]! # might not need to be array
 
     # event MarketParticipantDisavowed
     marketParticipantsDisavowed: Boolean # the dispute crowdsourcers for a market in a universe have been disavowed
@@ -29,11 +29,11 @@ type Market @entity {
     # event MarketMigrated
     migrated: Bytes
 
-    # event MarketTransferred
-    marketOwners: [Bytes!]! # QUESTION: how does this work? need to test live with array
+    # event MarketTransferred (NOTE, never emitted)
+    marketOwners: [Bytes!]!
 
-    # event MarketMailboxTransferred
-    marketMailboxOwners: [Bytes!]! # QUESTION: how does this work? need to test live with array
+    # event MarketMailboxTransferred (NOTE, never emitted)
+    marketMailboxOwners: [Bytes!]!
 
     # event CompleteSetPurchase
     completeSetPurchasers: [Bytes!]!
@@ -55,7 +55,7 @@ type InitialReport @entity {
     id: ID! # address market
     universe: Bytes!
     amountStaked: BigInt!
-    isDesignatedReported: Boolean # false null bug, no !
+    isDesignatedReporter: Boolean # false null bug, no !
     payoutNumerators: [BigInt!]!
     invalid: Boolean
 
@@ -95,8 +95,8 @@ type DisputeCrowdsourcer @entity {
 type Universe @entity {
     id: ID! # universe ID
     parentUniverse: Bytes! # genesis universe does not have a parent
-    payoutNumerators: [BigInt!]! # QUESTION: how does this fit in here, from event UniverseCreated . test live 
-    forked: Boolean # QUESTION: is this relevant? From event UniverseForked test live
+    payoutNumerators: [BigInt!]!
+    forked: Boolean
     invalid: Boolean
 }
 
@@ -121,7 +121,6 @@ type Order @entity {
     sharesRefund: BigInt
 
     # event OrderFilled
-    # QUESTION: - it might be possible to make MULTIPLE order fills, as you can half fill. I need to confirm but for now I am assuming arrays 
     filler: [Bytes!]!
     numCreatorShares: [BigInt!]!
     numCreatorTokens: [BigInt!]!
@@ -134,7 +133,6 @@ type Order @entity {
 }
 
 # event TradingProceedsClaimed (also used in Market)
-# QUESTION - does this belong back to the market? i.e. should it be an entity relationship, or put directly in there. I assume this is correct right now . so adding it in
 type ClaimedTradingProceed @entity {
     id: ID! # market
     universe: Bytes!
@@ -158,11 +156,12 @@ type Token @entity {
 type TokenOwner @entity {
     id: ID! # concatenation of token address and owner
     tokenAddress: Bytes!
+    tokenOwner: Bytes! # needed to reference back to user
     amount: BigInt!
 }
 
 
-# event DisputeWindowCreated
+# event DisputeWindowCreated (NOTE, NOT ON MAIN NET)
 type DisputeWindow @entity {
     id: ID! # id
     universe: Bytes!
@@ -171,11 +170,23 @@ type DisputeWindow @entity {
     disputeWindow: Bytes!
 }
 
-# TODO: user should be created and searched up in any interaction with the contracts 
+# aggregate the data to represent a user, to display in the Augur dApp
 type User @entity {
     id: ID! # user account
-    # completeSetsPurchased: TODO, not sure if i need. no , it isnt what i thought. keeping it in the Market
-    # completeSetsSold: TODO, not sure if i need. no , it isnt what i thought. keeping it in the Market
+
+    marketsCreated: [Bytes!]!
+    claimedTrades: [ClaimedTradingProceed!]! @derivedFrom(field: "sender")
+    initialReports: [InitialReport!]! @derivedFrom(field: "reporter")
+    disputeCrowdsourcers: [Bytes!]! # array of dispute crowdsourcer addresses a user has participated in
+    ordersCreated: [Bytes!]! #orderID
+    ordersCancelled: [Bytes!]! # orderID
+    ordersFilled: [Bytes!]! # orderID
+    tokensOwned: [TokenOwner!]! @derivedFrom(field: "tokenOwner")
+
+
+
+
+}
 
 
 

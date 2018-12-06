@@ -1,6 +1,7 @@
 // Required for dynamic memory allocation in WASM / AssemblyScript
 import 'allocator/arena'
-export { allocate_memory }
+
+export {allocate_memory}
 
 // Import APIs from graph-ts
 import {store, Bytes, BigInt} from '@graphprotocol/graph-ts'
@@ -12,10 +13,10 @@ import {
   DisputeCrowdsourcerCreated,
   DisputeCrowdsourcerRedeemed
 }
-from '../types/Augur/Augur'
+  from '../types/Augur/Augur'
 
 // Import entity types from the schema
-import {DisputeCrowdsourcer, InitialReport} from '../types/schema'
+import {DisputeCrowdsourcer, InitialReport, User} from '../types/schema'
 
 
 export function handleDisputeCrowdsourcerCompleted(event: DisputeCrowdsourcerCompleted): void {
@@ -41,6 +42,28 @@ export function handleDisputeCrowdsourcerContribution(event: DisputeCrowdsourcer
 
 
   store.set("DisputeCrowdsourcer", id, dc)
+
+  // User data below
+  let userID = event.params.reporter.toHex()
+  let user = store.get("User", userID) as User | null
+  if (user == null) {
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    user.tokensOwned = new Array<string>()
+  }
+
+
+  let userDC = user.disputeCrowdsourcers
+  userDC.push(event.params.market)
+  user.disputeCrowdsourcers = userDC
+
+  store.set("User", userID, user as User)
 }
 
 export function handleDisputeCrowdsourcerCreated(event: DisputeCrowdsourcerCreated): void {

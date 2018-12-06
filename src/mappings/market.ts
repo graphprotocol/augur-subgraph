@@ -20,7 +20,7 @@ import {
 } from '../types/Augur/Augur'
 
 // Import entity types from the schema
-import { Market, ClaimedTradingProceed } from '../types/schema'
+import { Market, ClaimedTradingProceed, User } from '../types/schema'
 
 export function handleMarketCreated(event: MarketCreated): void {
   let id = event.params.market.toHex()
@@ -58,6 +58,26 @@ export function handleMarketCreated(event: MarketCreated): void {
   market.marketType = marketTypeName
 
   store.set('Market', id, market)
+
+  // User data below
+  let userID = event.params.marketCreator.toHex()
+  let user = store.get("User", userID) as User |null
+  if (user == null){
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    user.tokensOwned = new Array<string>()
+  }
+  let mc = user.marketsCreated
+  mc.push(event.params.market)
+  user.marketsCreated = mc
+
+  store.set("User", userID, user as User)
 }
 
 // NOTE: original universe let out here. same question as before
@@ -176,5 +196,22 @@ export function handleTradingProceedsClaimed(event: TradingProceedsClaimed): voi
   tpc.finalTokenBalance = event.params.finalTokenBalance
 
   store.set("ClaimedTradingProceed", id, tpc as ClaimedTradingProceed)
+
+  // User data below
+  let userID = event.params.sender.toHex()
+  let user = store.get("User", userID) as User |null
+  if (user == null){
+    user = new User()
+    user.marketsCreated = new Array<Bytes>()
+    user.claimedTrades = new Array<string>()
+    user.initialReports = new Array<string>()
+    user.disputeCrowdsourcers = new Array<Bytes>()
+    user.ordersCreated = new Array<Bytes>()
+    user.ordersCancelled = new Array<Bytes>()
+    user.ordersFilled = new Array<Bytes>()
+    user.tokensOwned = new Array<string>()
+  }
+
+  store.set("User", userID, user as User)
 }
 

@@ -10,11 +10,11 @@ We are using the exact source code and abi from [etherscan](https://etherscan.io
 
 Most events are included and tracked in the subgraph. The following events were not tracked:
 
-* DisputeWindowCreated- Exists in the most up to date master branch, but doesn't exist on the live version on mainnet yet. 
-* EscapeHatchChanged - Not essential to Dapp user experience
-* TimestampSet - Not essential to Dapp user experience
-* FeeWindowRedeemed - Exists in the current live version, but has been removed from the most up to date master branch
-* FeeWindowCreated - Exists in the current live version, but has been removed from the most up to date master branch
+* `DisputeWindowCreated` - Exists in the most up to date master branch, but doesn't exist on the live version on mainnet yet. 
+* `EscapeHatchChanged` - Not essential to Dapp user experience
+* `TimestampSet` - Not essential to Dapp user experience
+* `FeeWindowRedeemed` - Exists in the current live version, but has been removed from the most up to date master branch
+* `FeeWindowCreated` - Exists in the current live version, but has been removed from the most up to date master branch
 
 
 

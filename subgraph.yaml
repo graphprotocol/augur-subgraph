@@ -38,9 +38,9 @@ dataSources:
           handler: handleMarketMigrated
         - event: MarketMailboxTransferred(address,address,address,address,address)
           handler: handleMarketMailboxTransferred
-        - event: MarketParticipantDisavowed(address,address)
+        - event: MarketParticipantsDisavowed(address,address)
           handler: handleMarketParticipantsDisavowed
-        - event: MarketTransferred(address,address,address)
+        - event: MarketTransferred(address,address,address,address)
           handler: handleMarketTransferred
         - event: CompleteSetsPurchased(address,address,address,uint256)
           handler: handleCompleteSetPurchased
@@ -51,7 +51,7 @@ dataSources:
 #          # Initial Report handlers Below
         - event: InitialReportSubmitted(address,address,address,uint256,bool,uint256[],bool)
           handler: handleInitialReportSubmitted
-        - event: InitialReportRedeemed(address,address,address,uint256,uint256,uint256,uint256[])
+        - event: InitialReporterRedeemed(address,address,address,uint256,uint256,uint256,uint256[])
           handler: handleInitialReporterRedeemed
         - event: InitialReporterTransferred(address,address,address,address)
           handler: handleInitialReporterTransferred

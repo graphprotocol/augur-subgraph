@@ -1,9 +1,5 @@
-// Required for dynamic memory allocation in WASM / AssemblyScript
-import 'allocator/arena'
-export { allocate_memory }
-
 // Import APIs from graph-ts
-import {store, Bytes} from '@graphprotocol/graph-ts'
+import {Bytes} from '@graphprotocol/graph-ts'
 
 // Import event types from the registrar contract ABI
 import {
@@ -17,7 +13,7 @@ import {InitialReport, User} from '../types/schema'
 
 export function handleInitialReportSubmitted(event: InitialReportSubmitted): void {
   let id = event.params.market.toHex()
-  let ir = new InitialReport()
+  let ir = new InitialReport(id)
 
   ir.universe = event.params.universe
   ir.reporter = event.params.reporter
@@ -26,13 +22,13 @@ export function handleInitialReportSubmitted(event: InitialReportSubmitted): voi
   ir.payoutNumerators = event.params.payoutNumerators
   ir.invalid = event.params.invalid
 
-  store.set("InitialReport", id, ir)
+  ir.save()
 
   // User data below
   let userID = event.params.reporter.toHex()
-  let user = store.get("User", userID) as User |null
+  let user = User.load(userID)
   if (user == null){
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -40,35 +36,35 @@ export function handleInitialReportSubmitted(event: InitialReportSubmitted): voi
     user.ordersCreated = new Array<Bytes>()
     user.ordersCancelled = new Array<Bytes>()
     user.ordersFilled = new Array<Bytes>()
-    store.set("User", userID, user as User)
+    user.save()
   }
 
 }
 
 export function handleInitialReporterRedeemed(event: InitialReporterRedeemed): void {
   let id = event.params.market.toHex()
-  let ir = store.get("InitialReport", id) as InitialReport
+  let ir = InitialReport.load(id)
 
   ir.amountRedeemed = event.params.amountRedeemed
   ir.repReceived = event.params.repReceived
   ir.reportingFeesReceived = event.params.reportingFeesReceived
 
-  store.set("InitialReport", id, ir)
+  ir.save()
 }
 
 export function handleInitialReporterTransferred(event: InitialReporterTransferred): void {
   let id = event.params.market.toHex()
-  let ir = store.get("InitialReport", id) as InitialReport
+  let ir = InitialReport.load(id)
 
   ir.reporter = event.params.to
 
-  store.set("InitialReport", id, ir)
+  ir.save()
 
   // User data below
   let userID = event.params.to.toHex()
-  let user = store.get("User", userID) as User |null
+  let user = User.load(userID)
   if (user == null){
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -77,7 +73,7 @@ export function handleInitialReporterTransferred(event: InitialReporterTransferr
     user.ordersCancelled = new Array<Bytes>()
     user.ordersFilled = new Array<Bytes>()
     user.tokensOwned = new Array<string>()
-    store.set("User", userID, user as User)
+    user.save()
   }
 
 

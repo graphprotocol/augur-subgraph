@@ -1,10 +1,5 @@
-// Required for dynamic memory allocation in WASM / AssemblyScript
-import 'allocator/arena'
-
-export {allocate_memory}
-
 // Import APIs from graph-ts
-import {store, Bytes, BigInt} from '@graphprotocol/graph-ts'
+import {Bytes, BigInt} from '@graphprotocol/graph-ts'
 
 // Import event types from the registrar contract ABI
 import {
@@ -21,16 +16,16 @@ import {DisputeCrowdsourcer, InitialReport, User} from '../types/schema'
 
 export function handleDisputeCrowdsourcerCompleted(event: DisputeCrowdsourcerCompleted): void {
   let id = event.params.market.toHex()
-  let dc = store.get("DisputeCrowdsourcer", id) as DisputeCrowdsourcer
+  let dc = DisputeCrowdsourcer.load(id)
 
   dc.completed = true
 
-  store.set("DisputeCrowdsourcer", id, dc)
+  dc.save()
 }
 
 export function handleDisputeCrowdsourcerContribution(event: DisputeCrowdsourcerContribution): void {
   let id = event.params.market.toHex()
-  let dc = store.get("DisputeCrowdsourcer", id) as DisputeCrowdsourcer
+  let dc = DisputeCrowdsourcer.load(id)
 
   let reporters = dc.reporters
   reporters.push(event.params.reporter)
@@ -41,13 +36,13 @@ export function handleDisputeCrowdsourcerContribution(event: DisputeCrowdsourcer
   dc.amountStaked = amountStaked
 
 
-  store.set("DisputeCrowdsourcer", id, dc)
+  dc.save()
 
   // User data below
   let userID = event.params.reporter.toHex()
-  let user = store.get("User", userID) as User | null
+  let user = User.load(userID)
   if (user == null) {
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -58,17 +53,16 @@ export function handleDisputeCrowdsourcerContribution(event: DisputeCrowdsourcer
     user.tokensOwned = new Array<string>()
   }
 
-
   let userDC = user.disputeCrowdsourcers
   userDC.push(event.params.market)
   user.disputeCrowdsourcers = userDC
 
-  store.set("User", userID, user as User)
+  user.save()
 }
 
 export function handleDisputeCrowdsourcerCreated(event: DisputeCrowdsourcerCreated): void {
   let id = event.params.market.toHex()
-  let dc = new DisputeCrowdsourcer()
+  let dc = new DisputeCrowdsourcer(id)
 
   dc.universe = event.params.universe
   dc.disputeCrowdsourcer = event.params.disputeCrowdsourcer
@@ -81,13 +75,13 @@ export function handleDisputeCrowdsourcerCreated(event: DisputeCrowdsourcerCreat
   dc.repReceived = new Array<BigInt>()
   dc.reportingFeesReceived = new Array<BigInt>()
 
-  store.set("DisputeCrowdsourcer", id, dc)
+  dc.save()
 }
 
 
 export function handleDisputeCrowdsourcerRedeemed(event: DisputeCrowdsourcerRedeemed): void {
   let id = event.params.market.toHex()
-  let dc = store.get("DisputeCrowdsourcer", id) as DisputeCrowdsourcer
+  let dc = DisputeCrowdsourcer.load(id)
 
   let amountRedeemed = dc.amountRedeemed
   amountRedeemed.push(event.params.amountRedeemed)
@@ -101,5 +95,5 @@ export function handleDisputeCrowdsourcerRedeemed(event: DisputeCrowdsourcerRede
   reportingFeesReceived.push(event.params.reportingFeesReceived)
   dc.reportingFeesReceived = reportingFeesReceived
 
-  store.set("DisputeCrowdsourcer", id, dc)
+  dc.save()
 }

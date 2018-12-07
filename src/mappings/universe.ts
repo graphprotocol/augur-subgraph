@@ -1,10 +1,3 @@
-// Required for dynamic memory allocation in WASM / AssemblyScript
-import 'allocator/arena'
-export { allocate_memory }
-
-// Import APIs from graph-ts
-import {store} from '@graphprotocol/graph-ts'
-
 // Import event types from the registrar contract ABI
 import {
   UniverseCreated,
@@ -16,21 +9,20 @@ import { Universe } from '../types/schema'
 
 export function handleUniverseCreated(event: UniverseCreated): void {
   let id = event.params.childUniverse.toHex()
-  let universe = new Universe()
+  let universe = new Universe(id)
 
   universe.parentUniverse = event.params.parentUniverse
   universe.payoutNumerators = event.params.payoutNumerators
   universe.invalid = event.params.invalid
 
-  store.set("Universe", id, universe)
+  universe.save()
 }
 
 export function handleUniverseForked(event: UniverseForked): void {
   let id = event.params.universe.toHex()
-  let universe = store.get("Universe", id) as Universe
+  let universe = Universe.load(id)
 
   universe.forked = true
 
-  store.set("Universe", id, universe)
-
+  universe.save()
 }

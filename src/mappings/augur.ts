@@ -1,7 +1,3 @@
-// Required for dynamic memory allocation in WASM / AssemblyScript
-import 'allocator/arena'
-export { allocate_memory }
-
 // We import and export out all the handlers here. This was done to seperate the handlers into files for readability.
 
 // imports

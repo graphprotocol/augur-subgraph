@@ -1,9 +1,5 @@
-// Required for dynamic memory allocation in WASM / AssemblyScript
-import 'allocator/arena'
-export { allocate_memory }
-
 // Import APIs from graph-ts
-import {store, Bytes, BigInt} from '@graphprotocol/graph-ts'
+import {Bytes, BigInt} from '@graphprotocol/graph-ts'
 
 // Import event types from the registrar contract ABI
 import {
@@ -17,19 +13,19 @@ import {Order, User} from '../types/schema'
 
 export function handleOrderCanceled(event: OrderCanceled): void {
   let id = event.params.orderId.toHex()
-  let order = store.get("Order", id) as Order
+  let order = Order.load(id)
 
   order.canceller = event.params.sender
   order.tokenRefund = event.params.tokenRefund
   order.sharesRefund = event.params.sharesRefund
 
-  store.set("Order", id, order)
+  order.save()
 
   // User data below
   let userID = event.params.sender.toHex()
-  let user = store.get("User", userID) as User | null
+  let user = User.load(userID)
   if (user == null) {
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -44,12 +40,12 @@ export function handleOrderCanceled(event: OrderCanceled): void {
   oc.push(event.params.orderId)
   user.ordersCancelled = oc
 
-  store.set("User", userID, user  as User)
+  user.save()
 }
 
 export function handleOrderCreated(event: OrderCreated): void {
   let id = event.params.orderId.toHex()
-  let order = new Order()
+  let order = new Order(id)
 
   let orderType = event.params.orderType
   if (orderType == 0) {
@@ -77,13 +73,13 @@ export function handleOrderCreated(event: OrderCreated): void {
   order.amountFilled = new Array<BigInt>()
   order.tradeGroupIDFilled = new Array<Bytes>()
 
-  store.set("Order", id, order)
+  order.save()
 
   // User data below
   let userID = event.params.creator.toHex()
-  let user = store.get("User", userID) as User | null
+  let user = User.load(userID)
   if (user == null) {
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -98,12 +94,12 @@ export function handleOrderCreated(event: OrderCreated): void {
   oc.push(event.params.orderId)
   user.ordersCreated = oc
 
-  store.set("User", userID, user as User)
+  user.save()
 }
 
 export function handleOrderFilled(event: OrderFilled): void {
   let id = event.params.orderId.toHex()
-  let order = store.get("Order", id) as Order
+  let order = Order.load(id)
 
   let filler = order.filler
   filler.push(event.params.filler)
@@ -141,13 +137,13 @@ export function handleOrderFilled(event: OrderFilled): void {
   tradeGroupIDFilled.push(event.params.tradeGroupId)
   order.tradeGroupIDFilled = tradeGroupIDFilled
 
-  store.set("Order", id, order)
+  order.save()
 
   // User data below
   let userID = event.params.filler.toHex()
-  let user = store.get("User", userID) as User | null
+  let user = User.load(userID)
   if (user == null) {
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -162,5 +158,5 @@ export function handleOrderFilled(event: OrderFilled): void {
   ordersFilled.push(event.params.orderId)
   user.ordersFilled = ordersFilled
 
-  store.set("User", userID, user as User)
+  user.save()
 }

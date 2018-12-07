@@ -1,9 +1,5 @@
-// Required for dynamic memory allocation in WASM / AssemblyScript
-import 'allocator/arena'
-export { allocate_memory }
-
 // Import APIs from graph-ts
-import { store, Bytes, BigInt} from '@graphprotocol/graph-ts'
+import {Bytes, BigInt} from '@graphprotocol/graph-ts'
 
 // Import event types from the registrar contract ABI
 import {
@@ -24,7 +20,7 @@ import { Market, ClaimedTradingProceed, User } from '../types/schema'
 
 export function handleMarketCreated(event: MarketCreated): void {
   let id = event.params.market.toHex()
-  let market = new Market()
+  let market = new Market(id)
 
   market.topic = event.params.topic
   market.description = event.params.description
@@ -57,13 +53,13 @@ export function handleMarketCreated(event: MarketCreated): void {
 
   market.marketType = marketTypeName
 
-  store.set('Market', id, market)
+  market.save()
 
   // User data below
   let userID = event.params.marketCreator.toHex()
-  let user = store.get("User", userID) as User |null
+  let user = User.load(userID)
   if (user == null){
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -77,84 +73,84 @@ export function handleMarketCreated(event: MarketCreated): void {
   mc.push(event.params.market)
   user.marketsCreated = mc
 
-  store.set("User", userID, user as User)
+  user.save()
 }
 
 // NOTE: original universe let out here. same question as before
 // NOTE: Never emitted on mainnet
 export function handleReportingParticpiantDisavowed(event: ReportingParticipantDisavowed): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   let reportingParticipants = market.reportingParticipantDisavowed
   reportingParticipants.push(event.params.reportingParticipant)
   market.reportingParticipantDisavowed = reportingParticipants
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 
 // QUESTION: does universe have to be checked too? I don't think so, because market addr is unique
 export function handleMarketFinalized(event: MarketFinalized): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   market.finalized = true
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 // NOTE: original universe let out here. same queestion as before
 // NOTE: Never emitted on mainnet
 export function handleMarketMigrated(event: MarketMigrated): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   market.migrated = event.params.newUniverse
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 // NOTE: original universe let out here. same queestion as before
 // NOTE: Never emitted on mainnet
 export function handleMarketMailboxTransferred(event: MarketMailboxTransferred): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   let marketMailboxOwners = market.marketMailboxOwners
   marketMailboxOwners.push(event.params.to)
   market.marketMailboxOwners = marketMailboxOwners
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 // NOTE: original universe let out here. same question as before
 // NOTE: Never emitted on mainnet
 export function handleMarketParticipantsDisavowed(event: MarketParticipantsDisavowed): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   market.marketParticipantsDisavowed = true
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 // NOTE: original universe let out here. same question as before
 // NOTE: Never emitted on mainnet
 export function handleMarketTransferred(event: MarketTransferred): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   let marketOwners = market.marketOwners
   marketOwners.push(event.params.to)
   market.marketOwners = marketOwners
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 export function handleCompleteSetPurchased(event: CompleteSetsPurchased): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   let purchasers = market.completeSetPurchasers
   purchasers.push(event.params.account)
@@ -164,12 +160,12 @@ export function handleCompleteSetPurchased(event: CompleteSetsPurchased): void {
   nums.push(event.params.numCompleteSets)
   market.numCompleteSetsPurchase = nums
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 export function handleCompleteSetSold(event: CompleteSetsSold): void {
   let id = event.params.market.toHex()
-  let market = store.get("Market", id) as Market
+  let market = Market.load(id)
 
   let sellers = market.completeSetSellers
   sellers.push(event.params.account)
@@ -179,14 +175,14 @@ export function handleCompleteSetSold(event: CompleteSetsSold): void {
   nums.push(event.params.numCompleteSets)
   market.numCompleteSetsSold = nums
 
-  store.set("Market", id, market)
+  market.save()
 }
 
 export function handleTradingProceedsClaimed(event: TradingProceedsClaimed): void {
   let id = event.params.market.toHex()
-  let tpc = store.get("ClaimedTradingProceed", id) as ClaimedTradingProceed | null
+  let tpc = ClaimedTradingProceed.load(id)
   if (tpc == null) {
-    tpc = new ClaimedTradingProceed()
+    tpc = new ClaimedTradingProceed(id)
   }
   tpc.universe = event.params.universe
   tpc.shareToken = event.params.shareToken
@@ -195,13 +191,13 @@ export function handleTradingProceedsClaimed(event: TradingProceedsClaimed): voi
   tpc.numPayoutTokens = event.params.numPayoutTokens
   tpc.finalTokenBalance = event.params.finalTokenBalance
 
-  store.set("ClaimedTradingProceed", id, tpc as ClaimedTradingProceed)
+  tpc.save()
 
   // User data below
   let userID = event.params.sender.toHex()
-  let user = store.get("User", userID) as User |null
+  let user = User.load(userID)
   if (user == null){
-    user = new User()
+    user = new User(userID)
     user.marketsCreated = new Array<Bytes>()
     user.claimedTrades = new Array<string>()
     user.initialReports = new Array<string>()
@@ -212,6 +208,6 @@ export function handleTradingProceedsClaimed(event: TradingProceedsClaimed): voi
     user.tokensOwned = new Array<string>()
   }
 
-  store.set("User", userID, user as User)
+  user.save()
 }
 

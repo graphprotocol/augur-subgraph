@@ -4,6 +4,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Augur
+    network: mainnet
     source:
       address: "0x75228dce4d82566d93068a8d5d49435216551599" # Mainnet: 0x75228dce4d82566d93068a8d5d49435216551599  Rinkeby (Browser test):  0x990B2D2aF7e87cd015A607c3A95d7622c9bBeDe1
       abi: Augur

@@ -1,4 +1,4 @@
 dist/
 node_modules/
-types/
+src/types/
 .DS_STORE
